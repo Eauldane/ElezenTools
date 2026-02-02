@@ -1,3 +1,5 @@
 <Solution>
-  <Project Path="ElezenTools/ElezenTools.csproj" />
+  <Project Path="ElezenTools/ElezenTools.csproj">
+    <Platform Project="x64" />
+  </Project>
 </Solution>

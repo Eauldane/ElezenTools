@@ -6,20 +6,17 @@ using Dalamud.Plugin.Services;
 
 namespace ElezenTools.Services;
 
-public sealed class Service
+#pragma warning disable S1118
+public class Service
+#pragma warning restore S1118
 {
     [PluginService] public static IDalamudPluginInterface PluginInterface { get; private set; }
     [PluginService] public static IFramework Framework { get; private set; }
     [PluginService] public static IPlayerState PlayerState { get; private set; }
     [PluginService] public static IPluginLog Log { get; private set; }
 
-    private void Init()
-    {
-        
-    }
     public static void Init(IDalamudPluginInterface pluginInterface)
     {
         pluginInterface.Create<Service>();
-        
     }
 }

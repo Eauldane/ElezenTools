@@ -9,12 +9,10 @@ namespace ElezenTools;
 
 public static class ElezenInit
 {
-    public static IDalamudPlugin Instance = null;
     public static bool Disposed { get; private set; } = false;
    
     public static void Init(IDalamudPluginInterface pluginInterface, IDalamudPlugin instance)
     {
-        Instance = instance;
         try
         {
             Service.Init(pluginInterface);
@@ -30,6 +28,5 @@ public static class ElezenInit
     public static void Dispose()
     {
         Disposed = true;
-        Instance = null;
     }
 }
