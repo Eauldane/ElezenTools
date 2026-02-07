@@ -59,6 +59,21 @@ public static class Colour
         
         return new Vector4(r / 255f, g / 255f, b / 255f, a /255f);
     }
+    
+    public static uint RgbaToColour(byte r, byte g, byte b, byte a)
+    { uint ret = a; ret <<= 8; ret += b; ret <<= 8; ret += g; ret <<= 8; ret += r; return ret; }
+
+    public static uint Vector4ToColour(Vector4 color)
+    {
+        uint ret = (byte)(color.W * 255);
+        ret <<= 8;
+        ret += (byte)(color.Z * 255);
+        ret <<= 8;
+        ret += (byte)(color.Y * 255);
+        ret <<= 8;
+        ret += (byte)(color.X * 255);
+        return ret;
+    }
 }
 
 

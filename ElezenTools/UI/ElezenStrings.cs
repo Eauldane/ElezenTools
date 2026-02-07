@@ -20,6 +20,11 @@ public static class ElezenStrings
     private const byte ColourTypeForeground = 0x13;
     private const byte ColourTypeGlow = 0x14;
 
+    /// <summary>
+    /// Build a coloured SeString instance, for use in Honorifics, chat box, nameplates, etc. 
+    /// </summary>
+    /// <param name="text">The text for the .</param>
+    /// <returns>An SeString with the defined colours.</returns>
     public static SeString BuildColouredString(string text, Colour colours)
     {
         var ssb = new SeStringBuilder();
