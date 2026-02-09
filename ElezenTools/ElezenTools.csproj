@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <Version>0.0.8.6</Version>
+        <Version>0.0.8.12</Version>
         <TargetFramework>net10.0-windows</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
@@ -16,6 +16,8 @@
         <Authors>Eauldane</Authors>
         <Description>A stable, opinionate wrapper for Dalamud with compatibility shims.</Description>
         <Copyright>Eauldane</Copyright>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -64,7 +66,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Meziantou.Analyzer" Version="2.0.291">
+      <PackageReference Include="Meziantou.Analyzer" Version="2.0.298">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
@@ -75,7 +77,16 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Data\Classes\" />
       <Folder Include="Player\" />
     </ItemGroup>
+    <ItemGroup>
+        <None Include="..\LICENSE" Pack="true" PackagePath="" Link="LICENSE"/>
+    </ItemGroup>
+    <ItemGroup>
+        <None Include="..\README.md" Pack="true" PackagePath="" Link="README.md"/>
+    </ItemGroup>
+
+
 
 </Project>

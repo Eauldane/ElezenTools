@@ -19,5 +19,6 @@ public static class ElezenColours
     public static Vector4 SeafoamGreen { get; internal set; } = new Vector4(0.6275f, 0.8392f, 0.7059f, 1.0f);
     public static Vector4 EclipseRed { get; internal set; } = new Vector4(0.196f, 0.098f, 0.098f, 1.0f);
     public static Vector4 LemonYellow { get; internal set; } = new Vector4(0.98f, 0.98f, 0.2f, 1.0f);
-    
+    public static Vector4 BooleanRed { get; internal set; } = new Vector4(0.9f, 0.15f, 0.15f, 1.0f);
+    public static Vector4 BooleanGreen  { get; internal set; } = new Vector4(0.2f, 0.85f, 0.1f, 1.0f);
 }
