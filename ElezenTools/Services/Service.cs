@@ -24,6 +24,9 @@ public class Service
     [PluginService] public static IPlayerState PlayerState { get; private set; }
     [PluginService] public static IPluginLog Log { get; private set; }
     [PluginService] public static IObjectTable ObjectTable { get; private set; }
+    [PluginService] public static IDataManager DataManager { get; private set; }
+    [PluginService] public static IChatGui ChatGui { get; private set; }
+
 
     public static void Init(IDalamudPluginInterface pluginInterface)
     {
@@ -32,8 +35,6 @@ public class Service
 
     public static async Task UseFramework(System.Action action)
     {
-        Log.Information("Framework Event {0}", action.GetType().Name);
-
         if (!Framework.IsInFrameworkUpdateThread)
         {
             await Framework.RunOnFrameworkThread(action).ContinueWith((_) => Task.CompletedTask).ConfigureAwait(false);
@@ -52,7 +53,6 @@ public class Service
     {
         if (!Framework.IsInFrameworkUpdateThread)
         {
-            Log.Information("Framework Event {0}", typeof(T).Name);
             var result = await Framework.RunOnFrameworkThread(func).ContinueWith((task) => task.Result).ConfigureAwait(false);
             while (Framework.IsInFrameworkUpdateThread) // yield the thread again, should technically never be triggered
             {
@@ -60,7 +60,6 @@ public class Service
             }
             return result;
         }
-        Log.Information("Framework Event - off thread {0}", typeof(T).Name);
 
         return func.Invoke();
     }
