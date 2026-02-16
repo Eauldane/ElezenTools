@@ -8,6 +8,7 @@
 // by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 
+using System.Numerics;
 using System.Runtime.InteropServices;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
@@ -67,5 +68,12 @@ public static class ElezenStrings
         => new([0x02, colorType, 0x02, 0xEC, 0x03]);
 
     [StructLayout(LayoutKind.Sequential)]
-    public readonly record struct Colour(uint Foreground = 0, uint Glow = 0);
+    public readonly record struct Colour(uint Foreground = 0, uint Glow = 0)
+    {
+        public Colour(Vector4 foreground, Vector4? glow = null)
+            : this(global::ElezenTools.UI.Colour.Vector4ToColour(foreground),
+                glow.HasValue ? global::ElezenTools.UI.Colour.Vector4ToColour(glow.Value) : 0u)
+        {
+        }
+    };
 }
