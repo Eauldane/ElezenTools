@@ -27,7 +27,8 @@ public class Service
     [PluginService] public static IDataManager DataManager { get; private set; }
     [PluginService] public static IChatGui ChatGui { get; private set; }
     [PluginService] public static ICommandManager CommandManager { get; private set; }
-
+    [PluginService] public static IGameConfig GameConfig { get; private set; }
+    
 
     public static void Init(IDalamudPluginInterface pluginInterface)
     {
@@ -65,40 +66,5 @@ public class Service
         return func.Invoke();
     }
 
-    /// <summary>
-    /// Sends a chat command through the in-game command pipeline.
-    /// Example: "/say Hello".
-    /// </summary>
-    /// <param name="commandText">The full command text.</param>
-    /// <returns>True if the command was found and dispatched.</returns>
-    public static async Task<bool> SendChatCommand(string commandText)
-    {
-        if (string.IsNullOrWhiteSpace(commandText))
-            return false;
-
-        return await UseFramework(() => CommandManager.ProcessCommand(commandText.Trim())).ConfigureAwait(false);
-    }
-
-    /// <summary>
-    /// Sends a chat message. If the message already starts with "/", it is sent as-is.
-    /// Otherwise, it is prefixed with the provided chat mode (default: /say).
-    /// </summary>
-    /// <param name="messageText">The chat message or full command text.</param>
-    /// <param name="chatMode">The slash command prefix used for plain text messages.</param>
-    /// <returns>True if the command was found and dispatched.</returns>
-    public static Task<bool> SendChatMessage(string messageText, string chatMode = "/say")
-    {
-        if (string.IsNullOrWhiteSpace(messageText))
-            return Task.FromResult(false);
-
-        var trimmedMessage = messageText.Trim();
-        if (trimmedMessage.StartsWith('/'))
-            return SendChatCommand(trimmedMessage);
-
-        var effectiveChatMode = string.IsNullOrWhiteSpace(chatMode) ? "/say" : chatMode.Trim();
-        if (!effectiveChatMode.StartsWith('/'))
-            effectiveChatMode = $"/{effectiveChatMode}";
-
-        return SendChatCommand($"{effectiveChatMode} {trimmedMessage}");
-    }
+  
 }

@@ -190,7 +190,7 @@ public static partial class ElezenData
             return new TownData(townId, townName);
         }
 
-        private static JobRole MapJobRole(uint jobType)
+        private static JobRole MapJobTypeRole(uint jobType)
         {
             return jobType switch
             {
@@ -204,10 +204,33 @@ public static partial class ElezenData
             };
         }
 
+        private static JobRole MapClassRole(uint roleType, object row)
+        {
+            return roleType switch
+            {
+                1 => JobRole.Tank,
+                2 => JobRole.MeleeDps,
+                3 => ResolveRangedClassRole(row),
+                4 => JobRole.PureHealer,
+                _ => JobRole.Unknown,
+            };
+        }
+
+        private static JobRole ResolveRangedClassRole(object row)
+        {
+            var primaryStat = LuminaRowReader.GetUInt32(row, "PrimaryStat");
+            return primaryStat switch
+            {
+                2 => JobRole.PhysicalRanged,
+                4 => JobRole.MagicalRanged,
+                _ => JobRole.Unknown,
+            };
+        }
+
         private static JobRole ResolveJobRole(object row)
         {
             var jobType = LuminaRowReader.GetUInt32(row, "JobType");
-            var role = MapJobRole(jobType);
+            var role = MapJobTypeRole(jobType);
             if (role != JobRole.Unknown)
             {
                 return role;
@@ -216,7 +239,7 @@ public static partial class ElezenData
             var roleType = LuminaRowReader.GetUInt32(row, "Role");
             if (roleType != 0)
             {
-                var mapped = MapJobRole(roleType);
+                var mapped = MapClassRole(roleType, row);
                 if (mapped != JobRole.Unknown)
                 {
                     return mapped;

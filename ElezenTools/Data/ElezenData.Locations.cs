@@ -100,8 +100,8 @@ public static partial class ElezenData
                 var areaName = LuminaRowReader.GetRowName(row, "PlaceNameRegion") ?? string.Empty;
                 var placeNameId = LuminaRowReader.GetRowId(row, "PlaceName");
                 var placeNameRegionId = LuminaRowReader.GetRowId(row, "PlaceNameRegion");
-
-                locations.Add(new LocationData(row.RowId, name, areaName, placeNameId, placeNameRegionId));
+                var isPvpZone = LuminaRowReader.GetBool(row, "IsPvpZone");
+                locations.Add(new LocationData(row.RowId, name, areaName, placeNameId, placeNameRegionId, isPvpZone));
             }
 
             return locations.ToArray();
