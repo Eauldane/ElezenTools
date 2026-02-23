@@ -91,20 +91,57 @@ public static partial class ElezenData
             var locations = new List<LocationData>();
             foreach (var row in sheet)
             {
-                var name = LuminaRowReader.GetRowName(row, "PlaceName");
-                if (string.IsNullOrWhiteSpace(name))
+                var placeName = ReadPlaceName(row);
+                if (placeName == null || string.IsNullOrWhiteSpace(placeName.Value.Name))
                 {
                     continue;
                 }
 
-                var areaName = LuminaRowReader.GetRowName(row, "PlaceNameRegion") ?? string.Empty;
-                var placeNameId = LuminaRowReader.GetRowId(row, "PlaceName");
-                var placeNameRegionId = LuminaRowReader.GetRowId(row, "PlaceNameRegion");
+                var placeNameRegion = ReadPlaceNameRegion(row);
                 var isPvpZone = LuminaRowReader.GetBool(row, "IsPvpZone");
-                locations.Add(new LocationData(row.RowId, name, areaName, placeNameId, placeNameRegionId, isPvpZone));
+                locations.Add(new LocationData(
+                    row.RowId,
+                    placeName.Value.Name,
+                    placeNameRegion?.Name ?? string.Empty,
+                    placeName.Value.Id,
+                    placeNameRegion?.Id ?? 0,
+                    isPvpZone,
+                    placeName,
+                    placeNameRegion));
             }
 
             return locations.ToArray();
         }
+
+        private static PlaceNameData? ReadPlaceName(object row)
+        {
+            var placeNameId = LuminaRowReader.GetRowId(row, "PlaceName");
+            if (placeNameId == 0)
+            {
+                return null;
+            }
+
+            var placeName = LuminaRowReader.GetRowName(row, "PlaceName") ?? string.Empty;
+            return new PlaceNameData(placeNameId, placeName);
+        }
+
+        private static PlaceNameData? ReadPlaceNameRegion(object row)
+        {
+            var placeNameRegionId = LuminaRowReader.GetRowId(row, "PlaceNameRegion");
+            if (placeNameRegionId == 0)
+            {
+                return null;
+            }
+
+            var placeNameRegion = LuminaRowReader.GetRowName(row, "PlaceNameRegion") ?? string.Empty;
+            return new PlaceNameData(placeNameRegionId, placeNameRegion);
+        }
+
+        public static LocationData? GetCurrentLocation()
+        {
+            return GetByTerritoryId(Service.ClientState.TerritoryType);
+        }
+
+        
     }
 }

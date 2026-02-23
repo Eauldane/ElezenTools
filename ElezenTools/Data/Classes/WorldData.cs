@@ -8,4 +8,6 @@ public readonly record struct WorldData(
     uint RegionId,
     string RegionName,
     bool IsPublic,
-    bool IsCloud);
+    bool IsCloud,
+    DataCentreData? DataCenter = null,
+    RegionData? Region = null);

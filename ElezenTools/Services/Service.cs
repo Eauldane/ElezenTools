@@ -27,7 +27,13 @@ public class Service
     [PluginService] public static IDataManager DataManager { get; private set; }
     [PluginService] public static IChatGui ChatGui { get; private set; }
     [PluginService] public static ICommandManager CommandManager { get; private set; }
-    [PluginService] public static IGameConfig GameConfig { get; private set; }
+    [PluginService] public static IClientState ClientState { get; private set; }
+    
+    [PluginService]
+    public static IGameConfig GameConfig
+    {
+        get; private set; 
+    }
     
 
     public static void Init(IDalamudPluginInterface pluginInterface)

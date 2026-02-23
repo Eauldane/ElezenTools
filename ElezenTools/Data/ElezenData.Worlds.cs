@@ -108,8 +108,12 @@ public static partial class ElezenData
 
         var dataCenters = BuildDataCenters(worldsByDataCenter, dcInfoById);
         var regions = BuildRegions(worldsByRegion, dataCenters);
+        var regionsById = BuildRegionsById(regions);
+        dataCenters = LinkDataCenterRegions(dataCenters, regionsById);
+        var dataCentersById = BuildDataCentersById(dataCenters);
+        var resolvedWorlds = LinkWorldReferences(worlds, dataCentersById, regionsById);
 
-        return new WorldDataSet(worlds.ToArray(), dataCenters, regions);
+        return new WorldDataSet(resolvedWorlds, dataCenters, regions);
     }
 
     private static Dictionary<uint, DataCenterInfo> BuildDataCenterInfo(IEnumerable<WorldDCGroupType>? dcSheet)
@@ -152,43 +156,115 @@ public static partial class ElezenData
             return false;
         }
 
+        var dataCenter = ReadWorldDataCenter(row, dcInfoById);
+        var region = ReadWorldRegion(row, dataCenter, dcInfoById);
+        var dataCenterId = dataCenter?.Id ?? 0;
+        var dataCenterName = dataCenter?.Name ?? string.Empty;
+        var regionId = region?.Id ?? 0;
+        var regionName = region?.Name ?? ResolveRegionName(regionId);
+
+        world = new WorldData(
+            row.RowId,
+            name,
+            dataCenterId,
+            dataCenterName,
+            regionId,
+            regionName,
+            LuminaRowReader.GetBool(row, "IsPublic"),
+            LuminaRowReader.GetBool(row, "IsCloud"),
+            dataCenter,
+            region);
+
+        return true;
+    }
+
+    private static DataCentreData? ReadWorldDataCenter(
+        object row,
+        IReadOnlyDictionary<uint, DataCenterInfo> dcInfoById)
+    {
         var dataCenterId = LuminaRowReader.GetRowId(row, "DataCenter");
         if (dataCenterId == 0)
         {
             dataCenterId = LuminaRowReader.GetUInt32(row, "DataCenter");
         }
 
-        var dataCenterName = LuminaRowReader.GetRowName(row, "DataCenter");
-        if (string.IsNullOrWhiteSpace(dataCenterName) && dcInfoById.TryGetValue(dataCenterId, out var dcInfo))
+        if (dataCenterId == 0)
         {
-            dataCenterName = dcInfo.Name;
+            return null;
         }
 
+        var dataCenterName = LuminaRowReader.GetRowName(row, "DataCenter");
+        var regionId = 0u;
+
+        if (dcInfoById.TryGetValue(dataCenterId, out var dcInfo))
+        {
+            if (string.IsNullOrWhiteSpace(dataCenterName))
+            {
+                dataCenterName = dcInfo.Name;
+            }
+
+            regionId = dcInfo.RegionId;
+        }
+
+        var region = ReadWorldRegion(row, dataCenterId, regionId);
+        if (region != null)
+        {
+            regionId = region.Value.Id;
+        }
+
+        return new DataCentreData(
+            dataCenterId,
+            dataCenterName ?? string.Empty,
+            regionId,
+            region?.Name ?? ResolveRegionName(regionId),
+            Array.Empty<uint>(),
+            region);
+    }
+
+    private static RegionData? ReadWorldRegion(
+        object row,
+        DataCentreData? dataCenter,
+        IReadOnlyDictionary<uint, DataCenterInfo> dcInfoById)
+    {
+        var dataCenterId = dataCenter?.Id ?? 0;
+        var fallbackRegionId = dataCenter?.RegionId ?? 0;
+        if (fallbackRegionId == 0 && dataCenterId != 0 && dcInfoById.TryGetValue(dataCenterId, out var dcInfo))
+        {
+            fallbackRegionId = dcInfo.RegionId;
+        }
+
+        return ReadWorldRegion(row, dataCenterId, fallbackRegionId);
+    }
+
+    private static RegionData? ReadWorldRegion(
+        object row,
+        uint dataCenterId,
+        uint fallbackRegionId)
+    {
         var regionId = LuminaRowReader.GetRowId(row, "Region");
         if (regionId == 0)
         {
             regionId = LuminaRowReader.GetUInt32(row, "Region");
         }
 
-        if (regionId == 0 && dcInfoById.TryGetValue(dataCenterId, out var dcInfoForRegion))
+        if (regionId == 0)
         {
-            regionId = dcInfoForRegion.RegionId;
+            regionId = fallbackRegionId;
+        }
+
+        if (regionId == 0)
+        {
+            return null;
         }
 
         var regionName = LuminaRowReader.GetRowName(row, "Region");
         regionName = ResolveRegionName(regionId, regionName);
 
-        world = new WorldData(
-            row.RowId,
-            name,
-            dataCenterId,
-            dataCenterName ?? string.Empty,
-            regionId,
-            regionName,
-            LuminaRowReader.GetBool(row, "IsPublic"),
-            LuminaRowReader.GetBool(row, "IsCloud"));
+        var linkedDataCenterIds = dataCenterId == 0
+            ? Array.Empty<uint>()
+            : new[] { dataCenterId };
 
-        return true;
+        return new RegionData(regionId, regionName, linkedDataCenterIds, Array.Empty<uint>());
     }
 
     private static void AddWorldToGrouping(
@@ -232,7 +308,10 @@ public static partial class ElezenData
 
             var regionName = ResolveRegionName(regionId);
             var worldIds = worldGroup.Select(world => world.Id).ToArray();
-            dataCenters.Add(new DataCentreData(dataCenterId, name, regionId, regionName, worldIds));
+            RegionData? linkedRegion = regionId == 0
+                ? null
+                : new RegionData(regionId, regionName, new[] { dataCenterId }, worldIds);
+            dataCenters.Add(new DataCentreData(dataCenterId, name, regionId, regionName, worldIds, linkedRegion));
         }
 
         return dataCenters.ToArray();
@@ -256,6 +335,79 @@ public static partial class ElezenData
         }
 
         return regions.ToArray();
+    }
+
+    private static Dictionary<uint, DataCentreData> BuildDataCentersById(IEnumerable<DataCentreData> dataCenters)
+    {
+        var result = new Dictionary<uint, DataCentreData>();
+        foreach (var dataCenter in dataCenters)
+        {
+            result[dataCenter.Id] = dataCenter;
+        }
+
+        return result;
+    }
+
+    private static Dictionary<uint, RegionData> BuildRegionsById(IEnumerable<RegionData> regions)
+    {
+        var result = new Dictionary<uint, RegionData>();
+        foreach (var region in regions)
+        {
+            result[region.Id] = region;
+        }
+
+        return result;
+    }
+
+    private static DataCentreData[] LinkDataCenterRegions(
+        IReadOnlyList<DataCentreData> dataCenters,
+        IReadOnlyDictionary<uint, RegionData> regionsById)
+    {
+        var resolvedDataCenters = new DataCentreData[dataCenters.Count];
+        for (var index = 0; index < dataCenters.Count; index++)
+        {
+            var dataCenter = dataCenters[index];
+            RegionData? region = dataCenter.Region;
+            if (regionsById.TryGetValue(dataCenter.RegionId, out var resolvedRegion))
+            {
+                region = resolvedRegion;
+            }
+
+            resolvedDataCenters[index] = dataCenter with { Region = region };
+        }
+
+        return resolvedDataCenters;
+    }
+
+    private static WorldData[] LinkWorldReferences(
+        IReadOnlyList<WorldData> worlds,
+        IReadOnlyDictionary<uint, DataCentreData> dataCentersById,
+        IReadOnlyDictionary<uint, RegionData> regionsById)
+    {
+        var resolvedWorlds = new WorldData[worlds.Count];
+        for (var index = 0; index < worlds.Count; index++)
+        {
+            var world = worlds[index];
+            DataCentreData? dataCenter = world.DataCenter;
+            if (dataCentersById.TryGetValue(world.DataCenterId, out var resolvedDataCenter))
+            {
+                dataCenter = resolvedDataCenter;
+            }
+
+            RegionData? region = world.Region;
+            if (regionsById.TryGetValue(world.RegionId, out var resolvedRegion))
+            {
+                region = resolvedRegion;
+            }
+
+            resolvedWorlds[index] = world with
+            {
+                DataCenter = dataCenter,
+                Region = region,
+            };
+        }
+
+        return resolvedWorlds;
     }
 
     private sealed record DataCenterInfo(uint Id, string Name, uint RegionId);

@@ -6,4 +6,6 @@ public readonly record struct LocationData(
     string AreaName,
     uint PlaceNameId,
     uint PlaceNameRegionId,
-    bool IsPvpZone);
+    bool IsPvpZone,
+    PlaceNameData? PlaceName = null,
+    PlaceNameData? PlaceNameRegion = null);

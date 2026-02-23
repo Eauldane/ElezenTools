@@ -23,6 +23,8 @@ namespace ElezenTools.UI;
 
 public static class ElezenImgui
 {
+    private const string TooltipSeparator = "--SEP--";
+
     public static void WrappedText(string text, float wrapPosition = 0)
     {
         ImGui.PushTextWrapPos(wrapPosition);
@@ -166,5 +168,37 @@ public static class ElezenImgui
         using var font = ImRaii.PushFont(UiBuilder.IconFont);
         var iconSize = ImGui.CalcTextSize(icon.ToIconString());
         return iconSize;
+    }
+    
+    public static void DrawHelpText(string helpText)
+    {
+        ImGui.SameLine();
+        ShowIcon(FontAwesomeIcon.QuestionCircle, ImGui.GetColorU32(ImGuiCol.TextDisabled));
+        AttachToolTip(helpText);
+    }
+
+    public static void AttachToolTip(string text)
+    {
+        if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled))
+        {
+            ImGui.BeginTooltip();
+            ImGui.PushTextWrapPos(ImGui.GetFontSize() * 35f);
+            if (text.Contains(TooltipSeparator, StringComparison.Ordinal))
+            {
+                var splitText = text.Split(TooltipSeparator, StringSplitOptions.RemoveEmptyEntries);
+                for (int i = 0; i < splitText.Length; i++)
+                {
+                    ImGui.TextUnformatted(splitText[i]);
+                    if (i != splitText.Length - 1) ImGui.Separator();
+                }
+            }
+            else
+            {
+                ImGui.TextUnformatted(text);
+            }
+
+            ImGui.PopTextWrapPos();
+            ImGui.EndTooltip();
+        }
     }
 }

@@ -5,4 +5,5 @@ public readonly record struct DataCentreData(
     string Name,
     uint RegionId,
     string RegionName,
-    IReadOnlyList<uint> WorldIds);
+    IReadOnlyList<uint> WorldIds,
+    RegionData? Region = null);
