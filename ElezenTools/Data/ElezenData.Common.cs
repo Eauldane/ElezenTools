@@ -1,4 +1,5 @@
 using Dalamud.Game;
+using ElezenTools.Services;
 
 namespace ElezenTools.Data;
 
@@ -17,7 +18,8 @@ public static partial class ElezenData
 
     private static ClientLanguage ResolveLanguage(ClientLanguage? language)
     {
-        return language ?? ClientLanguage.English;
+        return language ?? Service.ClientState.ClientLanguage;
+        
     }
 
     private static string ResolveRegionName(uint regionId, string? overrideName = null)
