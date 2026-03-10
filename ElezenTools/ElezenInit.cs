@@ -21,7 +21,7 @@ public static class ElezenInit
 {
     public static bool Disposed { get; private set; } = false;
    
-    public static void Init(IDalamudPluginInterface pluginInterface, IDalamudPlugin instance)
+    public static void Init(IDalamudPluginInterface pluginInterface, IDalamudPlugin instance, LogEventLevel logEventLevel = LogEventLevel.Information)
     {
         try
         {
@@ -32,7 +32,7 @@ public static class ElezenInit
             Console.WriteLine(e.ToString());
         }
         Service.Log.Info($"ElezenTools initialised! We were loaded by {Service.PluginInterface.InternalName} version {instance.GetType().Assembly.GetName().Version}.");
-        Service.Log.MinimumLogLevel = LogEventLevel.Information;
+        Service.Log.MinimumLogLevel = logEventLevel;
     }
 
     public static void Dispose()
