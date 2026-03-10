@@ -25,7 +25,7 @@ public static class Colour
     {
         if (hex == null)
         {
-            return new Vector4(255f, 255f, 255f, 1f);
+            return new Vector4(1f, 1f, 1f, 1f);
         }
 
         hex = hex.Trim().TrimStart('#');
@@ -44,7 +44,7 @@ public static class Colour
         }
         if (hex.Length != 6 && hex.Length != 8)
         {
-            return new Vector4(255f, 255f, 255f, 1f);
+            return new Vector4(1f, 1f, 1f, 1f);
         }
 
         var r = byte.Parse(hex[..2], NumberStyles.HexNumber);
@@ -58,6 +58,11 @@ public static class Colour
         }
         
         return new Vector4(r / 255f, g / 255f, b / 255f, a /255f);
+    }
+
+    public static uint HexToColour(string? hex)
+    {
+        return Vector4ToColour(HexToVector4(hex));
     }
     
     public static uint RgbaToColour(byte r, byte g, byte b, byte a)
