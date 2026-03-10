@@ -79,7 +79,7 @@ public static class ElezenImgui
     {
         using var pushedFont = font.Push();
         using var pushedColor = ImRaii.PushColor(ImGuiCol.Text, color);
-        ImGui.TextUnformatted(text);
+        ImGui.Text(text);
     }
     
     public static void ShowIcon(FontAwesomeIcon icon, uint color)
@@ -174,10 +174,10 @@ public static class ElezenImgui
     {
         ImGui.SameLine();
         ShowIcon(FontAwesomeIcon.QuestionCircle, ImGui.GetColorU32(ImGuiCol.TextDisabled));
-        AttachToolTip(helpText);
+        AttachTooltip(helpText);
     }
 
-    public static void AttachToolTip(string text)
+    public static void AttachTooltip(string text)
     {
         if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled))
         {
@@ -188,13 +188,13 @@ public static class ElezenImgui
                 var splitText = text.Split(TooltipSeparator, StringSplitOptions.RemoveEmptyEntries);
                 for (int i = 0; i < splitText.Length; i++)
                 {
-                    ImGui.TextUnformatted(splitText[i]);
+                    ImGui.Text(splitText[i]);
                     if (i != splitText.Length - 1) ImGui.Separator();
                 }
             }
             else
             {
-                ImGui.TextUnformatted(text);
+                ImGui.Text(text);
             }
 
             ImGui.PopTextWrapPos();
