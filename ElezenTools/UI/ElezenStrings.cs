@@ -25,6 +25,8 @@ public static class ElezenStrings
     /// Build a coloured SeString instance, for use in Honorifics, chat box, nameplates, etc. 
     /// </summary>
     /// <param name="text">The text for the .</param>
+    /// <param name="colours">The Colour object for the string .</param>
+
     /// <returns>An SeString with the defined colours.</returns>
     public static SeString BuildColouredString(string text, Colour colours)
     {
@@ -41,6 +43,11 @@ public static class ElezenStrings
         return ssb.Build();
     }
         
+    /// <summary>
+    /// Build a payload denoting the start of a coloured SeString. You probably want BuildColouredSeString instead! 
+    /// </summary>
+    /// <param name="colours">The colour for the string.</param>
+    /// <returns>An SeString payload with the defined colours.</returns>
     public static SeString BuildColourStartString(Colour colours)
     {
         var ssb = new SeStringBuilder();
@@ -51,22 +58,33 @@ public static class ElezenStrings
         return ssb.Build();
     }
 
-    public static SeString BuildColourEndString(Colour colors)
+    /// <summary>
+    /// Build a payload denoting the end of a coloured SeString. You probably want BuildColouredSeString instead! 
+    /// </summary>
+    /// <param name="colours">The colour for the string.</param>
+    /// <returns>An SeString payload with the defined colours.</returns>
+    public static SeString BuildColourEndString(Colour colours)
     {
         var ssb = new SeStringBuilder();
-        if (colors.Glow != 0)
+        if (colours.Glow != 0)
             ssb.Add(BuildColourEndPayload(ColourTypeGlow));
-        if (colors.Foreground != 0)
+        if (colours.Foreground != 0)
             ssb.Add(BuildColourEndPayload(ColourTypeForeground));
         return ssb.Build();
     }
         
-    private static RawPayload BuildColourStartPayload(byte colorType, uint color)
-        => new(unchecked([0x02, colorType, 0x05, 0xF6, byte.Max((byte)color, 0x01), byte.Max((byte)(color >> 8), 0x01), byte.Max((byte)(color >> 16), 0x01), 0x03]));
+    private static RawPayload BuildColourStartPayload(byte colourType, uint colour)
+        => new(unchecked([0x02, colourType, 0x05, 0xF6, byte.Max((byte)colour, 0x01), byte.Max((byte)(colour >> 8), 0x01), byte.Max((byte)(color >> 16), 0x01), 0x03]));
 
-    private static RawPayload BuildColourEndPayload(byte colorType)
-        => new([0x02, colorType, 0x02, 0xEC, 0x03]);
+    private static RawPayload BuildColourEndPayload(byte colourType)
+        => new([0x02, colourType, 0x02, 0xEC, 0x03]);
 
+    /// <summary>
+    /// Struct representing a full SeString colourset with both foreground and glow colours. Accepts both uint and Vector4 colours. 
+    /// </summary>
+    /// <param name="Foreground">The colour the main text should be.</param>
+    /// <param name="Glow">The colour for the "background" of the text. Aesthetically, this
+    ///                     works best if it's a darker version of the colour used for the foreground.</param>
     [StructLayout(LayoutKind.Sequential)]
     public readonly record struct Colour(uint Foreground = 0, uint Glow = 0)
     {

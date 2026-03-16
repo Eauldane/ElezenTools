@@ -70,36 +70,36 @@ public static class ElezenImgui
         }
     }
     
-    public static void FontText(string text, IFontHandle font, Vector4? color = null)
+    public static void FontText(string text, IFontHandle font, Vector4? colour = null)
     {
-        FontText(text, font, color == null ? ImGui.GetColorU32(ImGuiCol.Text) : ImGui.GetColorU32(color.Value));
+        FontText(text, font, colour == null ? ImGui.GetColorU32(ImGuiCol.Text) : ImGui.GetColorU32(colour.Value));
     }
 
-    public static void FontText(string text, IFontHandle font, uint color)
+    public static void FontText(string text, IFontHandle font, uint colour)
     {
         using var pushedFont = font.Push();
-        using var pushedColor = ImRaii.PushColor(ImGuiCol.Text, color);
+        using var pushedColor = ImRaii.PushColor(ImGuiCol.Text, colour);
         ImGui.Text(text);
     }
     
-    public static void ShowIcon(FontAwesomeIcon icon, uint color)
+    public static void ShowIcon(FontAwesomeIcon icon, uint colour)
     {
-        FontText(icon.ToIconString(), Service.PluginInterface.UiBuilder.IconFontFixedWidthHandle, color);
+        FontText(icon.ToIconString(), Service.PluginInterface.UiBuilder.IconFontFixedWidthHandle, colour);
         
     }
 
-    public static void ShowIcon(FontAwesomeIcon icon, Vector4? color = null)
+    public static void ShowIcon(FontAwesomeIcon icon, Vector4? colour = null)
     {
-        ShowIcon(icon, color == null ? ImGui.GetColorU32(ImGuiCol.Text) : ImGui.GetColorU32(color.Value));
+        ShowIcon(icon, colour == null ? ImGui.GetColorU32(ImGuiCol.Text) : ImGui.GetColorU32(colour.Value));
     }
     
-    private static bool ShowIconButtonInternal(FontAwesomeIcon icon, string text, Vector4? defaultColor = null, float? width = null)
+    private static bool ShowIconButtonInternal(FontAwesomeIcon icon, string text, Vector4? defaultColour = null, float? width = null)
     {
         var iconFont = Service.PluginInterface.UiBuilder.IconFontFixedWidthHandle;
         int num = 0;
-        if (defaultColor.HasValue)
+        if (defaultColour.HasValue)
         {
-            ImGui.PushStyleColor(ImGuiCol.Button, defaultColor.Value);
+            ImGui.PushStyleColor(ImGuiCol.Button, defaultColour.Value);
             num++;
         }
 

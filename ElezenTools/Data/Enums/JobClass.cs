@@ -8,16 +8,13 @@
 // by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 
-namespace ElezenTools.Data;
+namespace ElezenTools.Data.Enums;
 
-public struct PlayerCharacter
+public enum JobClass
 {
-    public uint ObjectId { get; set; }
-    public string Name { get; set; }
-    public uint HomeWorldId { get; set; }
-    public nint Address { get; set; }
-    public byte Level { get; set; }
-    public byte ClassJob { get; set; }
-    public byte Gender { get; set; }
-    public byte Clan { get; set; }
-};
+    Unknown = 0, // NOTE: Usually this'll be DoH or DoL. Does Lumina have a way to differentiate the two? 
+    Healer = 2,
+    Tank = 1,
+    Dps = 3,
+
+}

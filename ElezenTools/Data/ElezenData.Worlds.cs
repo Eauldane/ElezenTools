@@ -1,3 +1,13 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2026 Eauldane
+//
+// This file is part of ElezenTools.
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
 using Dalamud.Game;
 using ElezenTools.Data.Classes;
 using ElezenTools.Data.Internal;
@@ -31,7 +41,7 @@ public static partial class ElezenData
             return TryGetById(id, out var world, language) ? world : null;
         }
 
-        public static bool TryGetById(uint id, out WorldData world, ClientLanguage? language = null)
+        private static bool TryGetById(uint id, out WorldData world, ClientLanguage? language = null)
         {
             var worlds = GetWorldDataSet(language).WorldItems;
             var index = Array.FindIndex(worlds, item => item.Id == id);
@@ -50,7 +60,7 @@ public static partial class ElezenData
             return TryGetByName(name, out var world, language) ? world : null;
         }
 
-        public static bool TryGetByName(string name, out WorldData world, ClientLanguage? language = null)
+        private static bool TryGetByName(string name, out WorldData world, ClientLanguage? language = null)
         {
             if (string.IsNullOrEmpty(name))
             {

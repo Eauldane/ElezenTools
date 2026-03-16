@@ -1,3 +1,13 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2026 Eauldane
+//
+// This file is part of ElezenTools.
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
 using Dalamud.Game;
 using ElezenTools.Data.Classes;
 
@@ -7,8 +17,16 @@ public static partial class ElezenData
 {
     public static class Regions
     {
+        /// <summary>
+        /// Load all Region data.
+        /// </summary>
         public static IReadOnlyDictionary<uint, RegionData> All => GetAll();
 
+        /// <summary>
+        /// Get all region data for a given language.
+        /// </summary>
+        /// <param name="language">Language to get. Defaults to client language.</param>
+        /// <returns>Dictionary of RegionData objects mapped to their row ID.</returns>
         public static IReadOnlyDictionary<uint, RegionData> GetAll(ClientLanguage? language = null)
         {
             var regions = GetWorldDataSet(language).RegionItems;
@@ -21,12 +39,18 @@ public static partial class ElezenData
             return result;
         }
 
+        /// <summary>
+        ///  Get RegionData by its ID.
+        /// </summary>
+        /// <param name="id">ID of the region to get</param>
+        /// <param name="language">Language to use, defaulting to client language.</param>
+        /// <returns></returns>
         public static RegionData? GetById(uint id, ClientLanguage? language = null)
         {
             return TryGetById(id, out var region, language) ? region : null;
         }
 
-        public static bool TryGetById(uint id, out RegionData region, ClientLanguage? language = null)
+        private static bool TryGetById(uint id, out RegionData region, ClientLanguage? language = null)
         {
             var regions = GetWorldDataSet(language).RegionItems;
             var index = Array.FindIndex(regions, item => item.Id == id);
@@ -40,12 +64,18 @@ public static partial class ElezenData
             return false;
         }
 
+        /// <summary>
+        /// Get a region by its name. Recommend setting the language! 
+        /// </summary>
+        /// <param name="name">Name of the region to get.</param>
+        /// <param name="language">Language to use. Defaults to client language.</param>
+        /// <returns></returns>
         public static RegionData? GetByName(string name, ClientLanguage? language = null)
         {
             return TryGetByName(name, out var region, language) ? region : null;
         }
 
-        public static bool TryGetByName(string name, out RegionData region, ClientLanguage? language = null)
+        private static bool TryGetByName(string name, out RegionData region, ClientLanguage? language = null)
         {
             if (string.IsNullOrEmpty(name))
             {

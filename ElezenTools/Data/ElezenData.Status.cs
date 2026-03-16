@@ -1,3 +1,13 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2026 Eauldane
+//
+// This file is part of ElezenTools.
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
 using Dalamud.Game;
 using ElezenTools.Data.Classes;
 using ElezenTools.Data.Enums;
@@ -13,8 +23,16 @@ public static partial class ElezenData
     {
         private static readonly LanguageCache<StatusData[]> Cache = new(BuildStatuses);
 
+        /// <summary>
+        /// Get all rows in the client's language
+        /// </summary>
         public static IReadOnlyDictionary<uint, StatusData> All => GetAll();
 
+        /// <summary>
+        ///  Get all rows in a specified language.
+        /// </summary>
+        /// <param name="language">The language to use. Defaults to client language.</param>
+        /// <returns>Dictionary of StatusData mapped to its Lumina ID.</returns>
         public static IReadOnlyDictionary<uint, StatusData> GetAll(ClientLanguage? language = null)
         {
             var statuses = GetStatuses(language);
@@ -27,12 +45,18 @@ public static partial class ElezenData
             return result;
         }
 
+        /// <summary>
+        /// Get a status by its ID, in a given language.
+        /// </summary>
+        /// <param name="id">The ID of the status to get.</param>
+        /// <param name="language">The language to get it in, defaulting to the client's language.</param>
+        /// <returns>StatusData if found, null otherwise.</returns>
         public static StatusData? GetById(uint id, ClientLanguage? language = null)
         {
             return TryGetById(id, out var status, language) ? status : null;
         }
 
-        public static bool TryGetById(uint id, out StatusData status, ClientLanguage? language = null)
+        private static bool TryGetById(uint id, out StatusData status, ClientLanguage? language = null)
         {
             var statuses = GetStatuses(language);
             var index = Array.FindIndex(statuses, item => item.Id == id);
@@ -46,12 +70,18 @@ public static partial class ElezenData
             return false;
         }
 
+        /// <summary>
+        /// Get a status by name. Risky if not setting a language! 
+        /// </summary>
+        /// <param name="name">The name to look for.</param>
+        /// <param name="language">Language to look for, defaulting to the client's language.</param>
+        /// <returns>StatusData if found, null otherwise.</returns>
         public static StatusData? GetByName(string name, ClientLanguage? language = null)
         {
             return TryGetByName(name, out var status, language) ? status : null;
         }
 
-        public static bool TryGetByName(string name, out StatusData status, ClientLanguage? language = null)
+        private static bool TryGetByName(string name, out StatusData status, ClientLanguage? language = null)
         {
             if (string.IsNullOrEmpty(name))
             {

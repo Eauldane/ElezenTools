@@ -31,6 +31,7 @@ public static class ElezenInit
         {
             Console.WriteLine(e.ToString());
         }
+        // This is technically unsafe, but if the plugin can't initialise, we probably have bigger problems.
         Service.Log.Info($"ElezenTools initialised! We were loaded by {Service.PluginInterface.InternalName} version {instance.GetType().Assembly.GetName().Version}.");
         Service.Log.MinimumLogLevel = logEventLevel;
     }

@@ -47,19 +47,32 @@ public static class Colour
             return new Vector4(1f, 1f, 1f, 1f);
         }
 
-        var r = byte.Parse(hex[..2], NumberStyles.HexNumber);
-        var g = byte.Parse(hex.Substring(2, 2), NumberStyles.HexNumber);
-        var b = byte.Parse(hex.Substring(4, 2), NumberStyles.HexNumber);
-        byte a = 255;
-
-        if (hex.Length == 8)
+        try
         {
-            a = byte.Parse(hex.Substring(6, 2), NumberStyles.HexNumber);
-        }
+            var r = byte.Parse(hex[..2], NumberStyles.HexNumber);
+            var g = byte.Parse(hex.Substring(2, 2), NumberStyles.HexNumber);
+            var b = byte.Parse(hex.Substring(4, 2), NumberStyles.HexNumber);
+            byte a = 255;
+
+
+            if (hex.Length == 8)
+            {
+                a = byte.Parse(hex.Substring(6, 2), NumberStyles.HexNumber);
+            }
         
-        return new Vector4(r / 255f, g / 255f, b / 255f, a /255f);
+            return new Vector4(r / 255f, g / 255f, b / 255f, a /255f);
+        }
+        catch
+        {
+            return new Vector4(1f, 1f, 1f, 1f);
+        }
     }
 
+    /// <summary>
+    /// Convert a hexadecimal string to a uint color, suitable for using with SeStrings and other Dalamud internals.
+    /// </summary>
+    /// <param name="hex">The hex string - 3, 4, 6 or 8 characters, with or without leading #.</param>
+    /// <returns>uint colour value. Returns white if the string was invalid or a null value was passed.</returns>
     public static uint HexToColour(string? hex)
     {
         return Vector4ToColour(HexToVector4(hex));
@@ -68,15 +81,20 @@ public static class Colour
     public static uint RgbaToColour(byte r, byte g, byte b, byte a)
     { uint ret = a; ret <<= 8; ret += b; ret <<= 8; ret += g; ret <<= 8; ret += r; return ret; }
 
-    public static uint Vector4ToColour(Vector4 color)
+    /// <summary>
+    /// Convert a Vector4 colour to a uint color, suitable for using with SeStrings and other Dalamud internals.
+    /// </summary>
+    /// <param name="colour">A Vector4 representing a colour.</param>
+    /// <returns>uint colour value. Returns white if the string was invalid or a null value was passed.</returns>
+    public static uint Vector4ToColour(Vector4 colour)
     {
-        uint ret = (byte)(color.W * 255);
+        uint ret = (byte)(colour.W * 255);
         ret <<= 8;
-        ret += (byte)(color.Z * 255);
+        ret += (byte)(colour.Z * 255);
         ret <<= 8;
-        ret += (byte)(color.Y * 255);
+        ret += (byte)(colour.Y * 255);
         ret <<= 8;
-        ret += (byte)(color.X * 255);
+        ret += (byte)(colour.X * 255);
         return ret;
     }
 }

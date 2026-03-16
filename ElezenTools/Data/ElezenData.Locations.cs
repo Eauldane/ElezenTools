@@ -1,3 +1,13 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2026 Eauldane
+//
+// This file is part of ElezenTools.
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
 using Dalamud.Game;
 using ElezenTools.Data.Classes;
 using ElezenTools.Data.Internal;
@@ -12,8 +22,16 @@ public static partial class ElezenData
     {
         private static readonly LanguageCache<LocationData[]> Cache = new(BuildLocations);
 
+        /// <summary>
+        /// Get all location data.
+        /// </summary>
         public static IReadOnlyDictionary<uint, LocationData> All => GetAll();
 
+        /// <summary>
+        /// Get all location data for a given language.
+        /// </summary>
+        /// <param name="language">Client language to use. Defaults to player's language if not set.</param>
+        /// <returns>Dictionary of all location data, mapped to the territory ID.</returns>
         public static IReadOnlyDictionary<uint, LocationData> GetAll(ClientLanguage? language = null)
         {
             var locations = GetLocations(language);
@@ -26,12 +44,18 @@ public static partial class ElezenData
             return result;
         }
 
+        /// <summary>
+        /// Get territory data by ID. 
+        /// </summary>
+        /// <param name="territoryId">ID of territory to get.</param>
+        /// <param name="language">Language to use, defaults to client language.</param>
+        /// <returns>LocationData object for the territory; or null if not found.</returns>
         public static LocationData? GetByTerritoryId(uint territoryId, ClientLanguage? language = null)
         {
             return TryGetByTerritoryId(territoryId, out var location, language) ? location : null;
         }
 
-        public static bool TryGetByTerritoryId(uint territoryId, out LocationData location, ClientLanguage? language = null)
+        private static bool TryGetByTerritoryId(uint territoryId, out LocationData location, ClientLanguage? language = null)
         {
             var locations = GetLocations(language);
             var index = Array.FindIndex(locations, item => item.TerritoryId == territoryId);
@@ -45,12 +69,18 @@ public static partial class ElezenData
             return false;
         }
 
+        /// <summary>
+        /// Get territory data by name. Risky if you don't set a client language! 
+        /// </summary>
+        /// <param name="name">Name of the territory to look for.</param>
+        /// <param name="language">Language to look for it in; defaulting to the client language.</param>
+        /// <returns>LocationData object if found, null otherwise.</returns>
         public static LocationData? GetByName(string name, ClientLanguage? language = null)
         {
             return TryGetByName(name, out var location, language) ? location : null;
         }
 
-        public static bool TryGetByName(string name, out LocationData location, ClientLanguage? language = null)
+        private static bool TryGetByName(string name, out LocationData location, ClientLanguage? language = null)
         {
             if (string.IsNullOrEmpty(name))
             {

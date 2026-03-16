@@ -1,3 +1,13 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2026 Eauldane
+//
+// This file is part of ElezenTools.
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
 using System.Numerics;
 using Dalamud.Game;
 using Dalamud.Interface.Style;
@@ -7,6 +17,7 @@ using ElezenTools.Data.Internal;
 using ElezenTools.Services;
 using Lumina.Excel.Sheets;
 using Dalamud.Interface.Colors;
+using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 
 namespace ElezenTools.Data;
 
@@ -16,8 +27,16 @@ public static partial class ElezenData
     {
         private static readonly LanguageCache<JobData[]> Cache = new(BuildJobs);
 
+        /// <summary>
+        /// Get all job data.
+        /// </summary>
         public static IReadOnlyDictionary<uint, JobData> All => GetAll();
 
+        /// <summary>
+        /// Get all job data.
+        /// </summary>
+        /// <param name="language">Client language to use. Defaults to player's language if not set.</param>
+        /// <returns></returns>
         public static IReadOnlyDictionary<uint, JobData> GetAll(ClientLanguage? language = null)
         {
             var jobs = GetJobs(language);
@@ -30,12 +49,18 @@ public static partial class ElezenData
             return result;
         }
 
+        /// <summary>
+        /// Get a job by its ID.
+        /// </summary>
+        /// <param name="id">Job ID to get.</param>
+        /// <param name="language">Client target language. Defaults to player's language.</param>
+        /// <returns>JobData entity if the job was found; or null otherwise.</returns>
         public static JobData? GetById(uint id, ClientLanguage? language = null)
         {
             return TryGetById(id, out var job, language) ? job : null;
         }
 
-        public static bool TryGetById(uint id, out JobData job, ClientLanguage? language = null)
+        private static bool TryGetById(uint id, out JobData job, ClientLanguage? language = null)
         {
             var jobs = GetJobs(language);
             var index = Array.FindIndex(jobs, item => item.Id == id);
@@ -49,12 +74,18 @@ public static partial class ElezenData
             return false;
         }
 
+        /// <summary>
+        ///  Get job by name. Potentally risky if language isn't specified! 
+        /// </summary>
+        /// <param name="name">Job name to get.</param>
+        /// <param name="language">Language to use. Default's to players language - manually specify if you can!</param>
+        /// <returns>JobData if found, null otherwise.</returns>
         public static JobData? GetByName(string name, ClientLanguage? language = null)
         {
             return TryGetByName(name, out var job, language) ? job : null;
         }
 
-        public static bool TryGetByName(string name, out JobData job, ClientLanguage? language = null)
+        private static bool TryGetByName(string name, out JobData job, ClientLanguage? language = null)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -74,12 +105,18 @@ public static partial class ElezenData
             return false;
         }
 
+        /// <summary>
+        /// Get a job by its abbreivation.
+        /// </summary>
+        /// <param name="abbreviation">Abbreviation to look for.</param>
+        /// <param name="language">Client language to check. Defaults to client language, set this if you can!</param>
+        /// <returns>JobData if found, null otherwise.</returns>
         public static JobData? GetByAbbreviation(string abbreviation, ClientLanguage? language = null)
         {
             return TryGetByAbbreviation(abbreviation, out var job, language) ? job : null;
         }
 
-        public static bool TryGetByAbbreviation(string abbreviation, out JobData job, ClientLanguage? language = null)
+        private static bool TryGetByAbbreviation(string abbreviation, out JobData job, ClientLanguage? language = null)
         {
             if (string.IsNullOrEmpty(abbreviation))
             {
@@ -135,6 +172,7 @@ public static partial class ElezenData
                 var sortOrder = LuminaRowReader.GetInt32(row, "SortOrder");
                 var classColour = ResolveClassColour(role);
                 var startingTown = ReadStartingTown(row);
+                var jobClass = GetJobClass(role);
 
                 jobs.Add(new JobData(
                     row.RowId,
@@ -147,7 +185,8 @@ public static partial class ElezenData
                     iconId,
                     sortOrder,
                     classColour,
-                    startingTown));
+                    startingTown,
+                    jobClass));
             }
 
             return jobs.ToArray();
@@ -163,6 +202,26 @@ public static partial class ElezenData
 
             var categoryName = LuminaRowReader.GetRowName(row, "ClassJobCategory") ?? string.Empty;
             return new JobCategoryData(categoryId, categoryName);
+        }
+
+        private static JobClass GetJobClass(JobRole role)
+        {
+            switch (role)
+            {
+                case JobRole.BarrierHealer:
+                case JobRole.PureHealer:
+                    return JobClass.Healer;
+                case JobRole.MagicalRanged:
+                case JobRole.PhysicalRanged:
+                case JobRole.MeleeDps:
+                    return JobClass.Dps;
+                case JobRole.Tank:
+                    return JobClass.Tank;
+                case JobRole.Unknown:
+                    return JobClass.Unknown;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(role));
+            }
         }
 
         private static JobParentData? ReadJobParent(object row)
@@ -251,20 +310,13 @@ public static partial class ElezenData
 
         private static Vector4 ResolveClassColour(JobRole role)
         {
-            switch (role)
+            return role switch
             {
-                case JobRole.BarrierHealer:
-                case JobRole.PureHealer:
-                    return ImGuiColors.HealerGreen;
-                case JobRole.Tank:
-                    return ImGuiColors.TankBlue;
-                case JobRole.MeleeDps:
-                case JobRole.MagicalRanged:
-                case JobRole.PhysicalRanged:
-                    return ImGuiColors.DPSRed;
-                default:
-                    return ImGuiColors.DalamudGrey;
-            }
+                JobRole.BarrierHealer or JobRole.PureHealer => ImGuiColors.HealerGreen,
+                JobRole.Tank => ImGuiColors.TankBlue,
+                JobRole.MeleeDps or JobRole.MagicalRanged or JobRole.PhysicalRanged => ImGuiColors.DPSRed,
+                _ => ImGuiColors.DalamudGrey
+            };
         }
     }
 }
