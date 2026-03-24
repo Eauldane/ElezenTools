@@ -9,15 +9,5 @@
 // (at your option) any later version.
 
 namespace ElezenTools.Data;
-[Obsolete("Temporary handler! Only here until I clean it.")]
-public struct PlayerCharacter
-{
-    public uint ObjectId { get; set; }
-    public string Name { get; set; }
-    public uint HomeWorldId { get; set; }
-    public nint Address { get; set; }
-    public byte Level { get; set; }
-    public byte ClassJob { get; set; }
-    public byte Gender { get; set; }
-    public byte Clan { get; set; }
-};
+[Obsolete("Temporary handler! Only here until I clean it. Use WorldData instead.")]
+public readonly record struct WorldInfo(string Name, string DataCenter);
