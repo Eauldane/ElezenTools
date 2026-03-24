@@ -1,0 +1,99 @@
+name: Bug Report
+description: Report a defect or regression in ElezenTools.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting an issue.
+
+        Please include enough detail for someone else to reproduce the problem. If this is related to a Dalamud or game update, include the versions involved.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: A short description of the problem.
+      placeholder: What is broken?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: List the exact steps needed to trigger the issue.
+      placeholder: |
+        1. Call ...
+        2. Open ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What should have happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What happened instead? Include error messages or stack traces if available.
+    validations:
+      required: true
+  - type: input
+    id: elezentools_version
+    attributes:
+      label: ElezenTools Version
+      description: The package, commit, or branch you are using.
+      placeholder: v1.2.3 or commit SHA
+    validations:
+      required: true
+  - type: input
+    id: dalamud_version
+    attributes:
+      label: Dalamud / API Version
+      description: Include the Dalamud version or API level if relevant.
+      placeholder: API 13 / Dalamud x.y.z
+  - type: input
+    id: game_version
+    attributes:
+      label: Game Version
+      description: Include the game version if the issue may be patch-related.
+      placeholder: 7.x
+  - type: dropdown
+    id: impact
+    attributes:
+      label: Impact
+      description: How severe is the problem?
+      options:
+        - Blocks usage entirely
+        - Major functionality is broken
+        - Minor functionality is broken
+        - Cosmetic or documentation issue
+    validations:
+      required: true
+  - type: textarea
+    id: code_sample
+    attributes:
+      label: Minimal Reproduction or Usage Example
+      description: Share the smallest code sample or usage snippet that shows the issue.
+      render: csharp
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment Details
+      description: OS, IDE, plugin context, or anything else that may matter.
+      placeholder: Windows 11, Rider 2025.3, plugin built against ...
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots or Logs
+      description: Paste relevant logs or attach screenshots if the issue is visible in UI or output.
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Anything else that would help investigate this issue.

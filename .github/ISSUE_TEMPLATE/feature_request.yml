@@ -1,0 +1,74 @@
+name: Feature Request
+description: Suggest an improvement or new capability for ElezenTools.
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the suggestion!
+
+        ElezenTools aims to stay beginner friendly, stable, and practical for plugin and mod developers. Explain the problem clearly before jumping to the proposed solution.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: What problem are you trying to solve?
+      placeholder: Describe the current limitation, friction, or missing capability.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed Solution
+      description: Describe the feature, API, or behavior you want to see.
+    validations:
+      required: true
+  - type: textarea
+    id: use_case
+    attributes:
+      label: Example Usage
+      description: Show how someone would use this in practice.
+      render: csharp
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Describe any workarounds or other solutions you considered.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      description: Which area does this request affect most?
+      options:
+        - Data helpers
+        - UI helpers
+        - API compatibility / shims
+        - Documentation / examples
+        - Testing / tooling
+        - Other
+    validations:
+      required: true
+  - type: dropdown
+    id: audience
+    attributes:
+      label: Intended Audience
+      description: Who benefits most from this change?
+      options:
+        - Newcomers learning plugin development
+        - Existing plugin developers
+        - Library maintainers
+        - Everyone
+    validations:
+      required: true
+  - type: textarea
+    id: compatibility
+    attributes:
+      label: Compatibility Notes
+      description: Note any expected API compatibility concerns, migration needs, or breaking changes.
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Add links, references, mockups, or other context here.
