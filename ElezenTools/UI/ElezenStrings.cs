@@ -74,7 +74,7 @@ public static class ElezenStrings
     }
         
     private static RawPayload BuildColourStartPayload(byte colourType, uint colour)
-        => new(unchecked([0x02, colourType, 0x05, 0xF6, byte.Max((byte)colour, 0x01), byte.Max((byte)(colour >> 8), 0x01), byte.Max((byte)(color >> 16), 0x01), 0x03]));
+        => new(unchecked([0x02, colourType, 0x05, 0xF6, byte.Max((byte)colour, 0x01), byte.Max((byte)(colour >> 8), 0x01), byte.Max((byte)(colour >> 16), 0x01), 0x03]));
 
     private static RawPayload BuildColourEndPayload(byte colourType)
         => new([0x02, colourType, 0x02, 0xEC, 0x03]);

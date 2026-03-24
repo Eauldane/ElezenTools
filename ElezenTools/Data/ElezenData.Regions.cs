@@ -65,34 +65,44 @@ public static partial class ElezenData
         }
 
         /// <summary>
-        /// Get a region by its name. Recommend setting the language! 
+        /// Get a region by its name. Returns null if the name is ambiguous.
         /// </summary>
         /// <param name="name">Name of the region to get.</param>
         /// <param name="language">Language to use. Defaults to client language.</param>
-        /// <returns></returns>
+        /// <returns>RegionData object if a single match is found, null otherwise.</returns>
         public static RegionData? GetByName(string name, ClientLanguage? language = null)
         {
             return TryGetByName(name, out var region, language) ? region : null;
         }
 
-        private static bool TryGetByName(string name, out RegionData region, ClientLanguage? language = null)
+        /// <summary>
+        /// Find all regions that share the same name.
+        /// </summary>
+        /// <param name="name">Name of the region to get.</param>
+        /// <param name="language">Language to use. Defaults to client language.</param>
+        /// <returns>All matching RegionData rows.</returns>
+        public static IReadOnlyList<RegionData> FindByName(string name, ClientLanguage? language = null)
         {
             if (string.IsNullOrEmpty(name))
+            {
+                return Array.Empty<RegionData>();
+            }
+
+            var regions = GetWorldDataSet(language).RegionItems;
+            return Array.FindAll(regions, item => string.Equals(item.Name, name, StringComparison.Ordinal));
+        }
+
+        private static bool TryGetByName(string name, out RegionData region, ClientLanguage? language = null)
+        {
+            var matches = FindByName(name, language);
+            if (matches.Count != 1)
             {
                 region = default;
                 return false;
             }
 
-            var regions = GetWorldDataSet(language).RegionItems;
-            var index = Array.FindIndex(regions, item => string.Equals(item.Name, name, StringComparison.Ordinal));
-            if (index >= 0)
-            {
-                region = regions[index];
-                return true;
-            }
-
-            region = default;
-            return false;
+            region = matches[0];
+            return true;
         }
 
         public static void Refresh()

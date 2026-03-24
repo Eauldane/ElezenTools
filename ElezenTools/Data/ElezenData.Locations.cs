@@ -70,34 +70,44 @@ public static partial class ElezenData
         }
 
         /// <summary>
-        /// Get territory data by name. Risky if you don't set a client language! 
+        /// Get territory data by name. Returns null if the name is ambiguous.
         /// </summary>
         /// <param name="name">Name of the territory to look for.</param>
         /// <param name="language">Language to look for it in; defaulting to the client language.</param>
-        /// <returns>LocationData object if found, null otherwise.</returns>
+        /// <returns>LocationData object if a single match is found, null otherwise.</returns>
         public static LocationData? GetByName(string name, ClientLanguage? language = null)
         {
             return TryGetByName(name, out var location, language) ? location : null;
         }
 
-        private static bool TryGetByName(string name, out LocationData location, ClientLanguage? language = null)
+        /// <summary>
+        /// Find all territory rows that share the same place name.
+        /// </summary>
+        /// <param name="name">Name of the territory to look for.</param>
+        /// <param name="language">Language to look for it in; defaulting to the client language.</param>
+        /// <returns>All matching LocationData rows.</returns>
+        public static IReadOnlyList<LocationData> FindByName(string name, ClientLanguage? language = null)
         {
             if (string.IsNullOrEmpty(name))
+            {
+                return Array.Empty<LocationData>();
+            }
+
+            var locations = GetLocations(language);
+            return Array.FindAll(locations, item => string.Equals(item.Name, name, StringComparison.Ordinal));
+        }
+
+        private static bool TryGetByName(string name, out LocationData location, ClientLanguage? language = null)
+        {
+            var matches = FindByName(name, language);
+            if (matches.Count != 1)
             {
                 location = default;
                 return false;
             }
 
-            var locations = GetLocations(language);
-            var index = Array.FindIndex(locations, item => string.Equals(item.Name, name, StringComparison.Ordinal));
-            if (index >= 0)
-            {
-                location = locations[index];
-                return true;
-            }
-
-            location = default;
-            return false;
+            location = matches[0];
+            return true;
         }
 
         public static void Refresh()
