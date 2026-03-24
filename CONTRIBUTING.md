@@ -62,7 +62,7 @@ Any IDE that supports C# can be used.
 
 ## Testing and Quality Control
 
-As a rule, any functions added should have a clear, well-documented explanation of what it
+As a rule, any public functions added should have a clear, well-documented explanation of what it
 does, what its parameters are, and what it returns. Even better if it has an example usage. 
 
 If it's something that has a visual impact on screen, or can be tested easily, attaching screenshots
