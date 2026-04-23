@@ -25,6 +25,7 @@ public static class ElezenImgui
 {
     private const string TooltipSeparator = "--SEP--";
 
+    
     public static void WrappedText(string text, float wrapPosition = 0)
     {
         ImGui.PushTextWrapPos(wrapPosition);
@@ -44,6 +45,37 @@ public static class ElezenImgui
         ImGui.PushTextWrapPos(wrapPosition);
         ImGui.Text(text);
         ImGui.PopTextWrapPos();
+    }
+
+    public static void DrawProgressBarOption(string label, float progress, string? barText = null,
+        string? statusText = null, Vector4? statusColour = null, float height = 18f, string? helpText = null)
+    {
+        DrawProgressBarOption(label, progress, new Vector2(-1f, height), barText, statusText, statusColour, helpText);
+    }
+
+    public static void DrawProgressBarOption(string label, float progress, Vector2 size, string? barText = null,
+        string? statusText = null, Vector4? statusColour = null, string? helpText = null)
+    {
+        var clampedProgress = Math.Clamp(progress, 0f, 1f);
+
+        ImGui.TextUnformatted(label);
+        if (!string.IsNullOrWhiteSpace(helpText))
+        {
+            DrawHelpText(helpText);
+        }
+
+        ImGui.ProgressBar(clampedProgress, size, barText ?? $"{clampedProgress:P1}");
+        DrawProgressBarStatus(statusText, statusColour);
+    }
+
+    public static void DrawProgressBarOption(string label, int current, int total, string? barText = null,
+        string? statusText = null, Vector4? statusColour = null, float height = 18f, string? helpText = null)
+    {
+        var safeCurrent = Math.Max(current, 0);
+        var safeTotal = Math.Max(total, 0);
+        var progress = safeTotal == 0 ? 0f : (float)safeCurrent / safeTotal;
+        DrawProgressBarOption(label, progress, new Vector2(-1f, height),
+            barText ?? $"{safeCurrent:N0} / {safeTotal:N0}", statusText, statusColour, helpText);
     }
 
     public static Vector4 GetBooleanColour(bool inputValue)
@@ -200,5 +232,21 @@ public static class ElezenImgui
             ImGui.PopTextWrapPos();
             ImGui.EndTooltip();
         }
+    }
+
+    private static void DrawProgressBarStatus(string? statusText, Vector4? statusColour)
+    {
+        if (string.IsNullOrWhiteSpace(statusText))
+        {
+            return;
+        }
+
+        if (statusColour.HasValue)
+        {
+            ImGui.TextColored(statusColour.Value, statusText);
+            return;
+        }
+
+        ImGui.TextDisabled(statusText);
     }
 }
