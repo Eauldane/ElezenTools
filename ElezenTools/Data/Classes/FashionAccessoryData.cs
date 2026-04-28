@@ -11,10 +11,14 @@
 namespace ElezenTools.Data.Classes;
 
 /// <summary>
-/// Helper record containing town data.
+/// Helper record containing fashion accessory data.
 /// </summary>
-/// <param name="Id">Lumina row ID for the town.</param>
-/// <param name="Name">Name of the town.</param>
-public readonly record struct TownData(
+/// <param name="Id">Lumina row ID for the fashion accessory.</param>
+/// <param name="Name">Fashion accessory name.</param>
+/// <param name="Description">Fashion accessory description text.</param>
+/// <param name="SortOrder">Fashion accessory sort order.</param>
+public readonly record struct FashionAccessoryData(
     uint Id,
-    string Name);
+    string Name,
+    string Description,
+    int SortOrder);

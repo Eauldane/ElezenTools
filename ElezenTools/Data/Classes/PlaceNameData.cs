@@ -10,6 +10,11 @@
 
 namespace ElezenTools.Data.Classes;
 
+/// <summary>
+/// Helper record containing place name data.
+/// </summary>
+/// <param name="Id">Lumina row ID for the place name.</param>
+/// <param name="Name">Localised text for the place name.</param>
 public readonly record struct PlaceNameData(
     uint Id,
     string Name);

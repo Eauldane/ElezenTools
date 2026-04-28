@@ -1,0 +1,76 @@
+Findings for Companion row 145 (wind-up Iceheart)
+Generated: 2026-04-15
+
+Question
+Identify any other tables that reference Companion row 145 ("wind-up Iceheart"), and determine whether any of them can be used to identify which minions/emotes are cash shop items.
+
+Method
+- Queried local FFXIV game data through Lumina against the installed sqpack files.
+- Cross-checked sheet relationships against xivdev EXDSchema (latest branch).
+
+Confirmed rows
+- Companion row 145 = "wind-up Iceheart"
+- CompanionTransient row 145 = description/special-action text for the same minion
+- Item row 12060 = "wind-up Iceheart"
+
+Tables referencing this minion
+1. CompanionTransient
+- Row 145 matches Companion row 145 by shared row id.
+- This is not a typed foreign-key reference, but it is a direct parallel data table for the minion.
+
+2. Item -> ItemAction -> Companion
+- Item row 12060 ("wind-up Iceheart") uses ItemAction row 658.
+- In the local data, Item.ItemAction was located at raw Item column 30.
+- ItemAction row 658 contains the value 145 in its payload, which links the item unlock to Companion row 145.
+- This is the useful relationship for unlock items.
+
+3. YKW
+- YKW row 7 has Companion = 145 and Item = 15174.
+- This is an explicit schema-level reference to Companion, but it is event-specific and not useful for cash shop detection.
+
+Tables checked that did not reference Companion 145
+- BannerCondition: no rows referencing Companion 145 were found in the local data.
+
+Schema-level references to Companion
+- CompanionTransient: same-key companion metadata table (shared row id, not a RowRef field)
+- YKW: explicit RowRef to Companion
+- BannerCondition: conditional field that can point to Companion, but no hit for row 145
+
+Can these tables be used to identify cash shop minions/emotes?
+Short answer: not directly.
+
+What is useful
+- Item -> ItemAction -> Companion
+- Item -> ItemAction -> Emote
+
+Why this helps
+- If you already know an item is from the cash shop, Item and ItemAction let you map that item to the unlocked minion or emote.
+- This works for minions such as wind-up Iceheart.
+- It also appears usable for emote unlock items such as Ballroom Etiquette items, where ItemAction payloads contain emote ids.
+
+What was not found
+- No direct "cash shop", "Mog Station", "online store", or similar flag was found on Companion, CompanionTransient, Emote, ItemAction, YKW, BannerCondition, Adventure, Quest, EmoteMode, BannerFacial, or BannerTimeline.
+- No schema table was found that directly marks a Companion or Emote row as cash shop sourced.
+- The schema search only found store/web-related tables such as MirageStoreSetItem, WebURL, WebGuidance, and OnlineStatus; none of these provided a direct cash shop marker for minions or emotes.
+
+Practical conclusion
+- The game data can map unlock items to minions/emotes.
+- The game data, from the sheets checked here, does not provide a reliable built-in cash shop flag for minions or emotes.
+- To build a list of cash shop minions/emotes, the workable route is:
+  1. Start with an external list of known cash shop items.
+  2. Join those items through Item -> ItemAction.
+  3. Read the target Companion or Emote id from the ItemAction payload.
+
+Useful schema references checked
+- Companion.yml
+- CompanionTransient.yml
+- Item.yml
+- ItemAction.yml
+- Emote.yml
+- YKW.yml
+- BannerCondition.yml
+- Adventure.yml
+- BannerFacial.yml
+- EmoteMode.yml
+- Quest.yml
+- BannerTimeline.yml

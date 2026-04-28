@@ -10,6 +10,13 @@
 
 namespace ElezenTools.Data.Classes;
 
+/// <summary>
+/// Helper record containing region data.
+/// </summary>
+/// <param name="Id">Lumina row ID for the region.</param>
+/// <param name="Name">Name of the region - e.g. Europe.</param>
+/// <param name="DataCenterIds">List of data centre row IDs contained in the region.</param>
+/// <param name="WorldIds">List of world row IDs contained in the region.</param>
 public readonly record struct RegionData(
     uint Id,
     string Name,

@@ -10,6 +10,12 @@
 
 namespace ElezenTools.Data.Classes;
 
+/// <summary>
+/// Helper record containing parent class data for a job.
+/// </summary>
+/// <param name="Id">Lumina row ID for the parent class.</param>
+/// <param name="Name">Name of the parent class - e.g. Conjurer.</param>
+/// <param name="Abbreviation">Abbreviation of the parent class - e.g. CNJ.</param>
 public readonly record struct JobParentData(
     uint Id,
     string Name,

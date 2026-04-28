@@ -10,6 +10,17 @@
 
 namespace ElezenTools.Data.Classes;
 
+/// <summary>
+/// Helper record containing location data for a territory.
+/// </summary>
+/// <param name="TerritoryId">Territory row ID.</param>
+/// <param name="Name">Name of the location - e.g. Old Gridania.</param>
+/// <param name="AreaName">Name of the wider area or region, if available.</param>
+/// <param name="PlaceNameId">PlaceName row ID for the location's name.</param>
+/// <param name="PlaceNameRegionId">PlaceName row ID for the wider area or region name.</param>
+/// <param name="IsPvpZone">Whether the territory is flagged as a PvP zone.</param>
+/// <param name="PlaceName">Resolved PlaceNameData object for the location name.</param>
+/// <param name="PlaceNameRegion">Resolved PlaceNameData object for the wider area or region name.</param>
 public readonly record struct LocationData(
     uint TerritoryId,
     string Name,

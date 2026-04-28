@@ -41,6 +41,38 @@ public static partial class ElezenData
             return TryGetById(id, out var world, language) ? world : null;
         }
 
+        /// <summary>
+        /// Get the current world of the local player.
+        /// </summary>
+        /// <param name="language">Language to use. Defaults to client language.</param>
+        /// <returns>WorldData for the local player's current world, or null if unavailable.</returns>
+        public static WorldData? GetCurrentWorld(ClientLanguage? language = null)
+        {
+            var playerState = Service.PlayerState;
+            if (!playerState.IsLoaded)
+            {
+                return null;
+            }
+
+            return GetById(LuminaRowReader.GetRowId(playerState, "CurrentWorld"), language);
+        }
+
+        /// <summary>
+        /// Get the home world of the local player.
+        /// </summary>
+        /// <param name="language">Language to use. Defaults to client language.</param>
+        /// <returns>WorldData for the local player's home world, or null if unavailable.</returns>
+        public static WorldData? GetHomeWorld(ClientLanguage? language = null)
+        {
+            var playerState = Service.PlayerState;
+            if (!playerState.IsLoaded)
+            {
+                return null;
+            }
+
+            return GetById(LuminaRowReader.GetRowId(playerState, "HomeWorld"), language);
+        }
+
         private static bool TryGetById(uint id, out WorldData world, ClientLanguage? language = null)
         {
             var worlds = GetWorldDataSet(language).WorldItems;

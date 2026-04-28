@@ -10,7 +10,11 @@
 
 namespace ElezenTools.Data.Classes;
 
-
+/// <summary>
+/// Helper record containing job category data.
+/// </summary>
+/// <param name="Id">Lumina row ID for the job category.</param>
+/// <param name="Name">Name of the job category.</param>
 public readonly record struct JobCategoryData(
     uint Id,
     string Name);

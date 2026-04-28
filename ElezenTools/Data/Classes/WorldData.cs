@@ -10,6 +10,19 @@
 
 namespace ElezenTools.Data.Classes;
 
+/// <summary>
+/// Helper record containing world data.
+/// </summary>
+/// <param name="Id">Lumina row ID for the world.</param>
+/// <param name="Name">Name of the world - e.g. Shiva.</param>
+/// <param name="DataCenterId">Row ID of the data centre the world belongs to. Prefer using the DataCenter object.</param>
+/// <param name="DataCenterName">Name of the data centre the world belongs to. Prefer using the DataCenter object.</param>
+/// <param name="RegionId">Row ID of the region the world belongs to. Prefer using the Region object.</param>
+/// <param name="RegionName">Name of the region the world belongs to. Prefer using the Region object.</param>
+/// <param name="IsPublic">Whether the world is marked as public in Lumina.</param>
+/// <param name="IsCloud">Whether the world is marked as a cloud world.</param>
+/// <param name="DataCenter">A DataCentreData object for the world's data centre.</param>
+/// <param name="Region">A RegionData object for the world's region.</param>
 public readonly record struct WorldData(
     uint Id,
     string Name,

@@ -28,6 +28,7 @@ public class Service
     [PluginService] public static IChatGui ChatGui { get; private set; }
     [PluginService] public static ICommandManager CommandManager { get; private set; }
     [PluginService] public static IClientState ClientState { get; private set; }
+    [PluginService] public static IUnlockState UnlockState { get; private set; }
     
     [PluginService]
     public static IGameConfig GameConfig

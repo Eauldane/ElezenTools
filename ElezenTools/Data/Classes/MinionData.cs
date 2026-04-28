@@ -11,10 +11,14 @@
 namespace ElezenTools.Data.Classes;
 
 /// <summary>
-/// Helper record containing town data.
+/// Helper record containing minion data.
 /// </summary>
-/// <param name="Id">Lumina row ID for the town.</param>
-/// <param name="Name">Name of the town.</param>
-public readonly record struct TownData(
+/// <param name="Id">Lumina row ID for the minion.</param>
+/// <param name="Name">Minion name.</param>
+/// <param name="Description">Minion description text.</param>
+/// <param name="SortOrder">Minion sort order.</param>
+public readonly record struct MinionData(
     uint Id,
-    string Name);
+    string Name,
+    string Description,
+    uint SortOrder);
