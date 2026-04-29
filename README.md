@@ -156,14 +156,45 @@ gives the library access to the Dalamud services it wraps.
 This gives you a single setup step at plugin start-up, after which you can use ElezenTools 
 instead of wiring up service access yourself throughout the project.
 
+### Async Plugins
+
+As of 15.0.0, ElezenTools supports async plugins using the `IAsyncDalamudPlugin` interface.
+
+```csharp
+using Dalamud.Plugin;
+using ElezenTools;
+
+public sealed class Plugin : IAsyncDalamudPlugin
+{
+    public Plugin(IDalamudPluginInterface pluginInterface)
+    {
+        ElezenInit.Init(pluginInterface, this);
+    }
+
+    public Task LoadAsync(CancellationToken cancellationToken)
+        => Task.CompletedTask;
+
+    public ValueTask DisposeAsync()
+    {
+        ElezenInit.Dispose();
+        return ValueTask.CompletedTask;
+    }
+}
+
+```
+
+You can also use the lifecycle-agnostic `Assembly` instantiation method if you might switch to async plugins later:
+
+`ElezenInit.Init(pluginInterface, GetType().Assembly);`
+
 ## Updates and Versioning
 
 Versions are numbered in three parts, roughly equating to SemVer:
 
-Example: 14.0.1
+Example: 15.0.1
 
-14 is the Dalamud API version, and is bumped when Dalamud releases a major API version. The 0 is reserved for 
-post-major update bumps - for example, 7.5's release will bring 14.5.0. The final number is the patch release 
+15 is the Dalamud API version, and is bumped when Dalamud releases a major API version. The 0 is reserved for 
+post-major update bumps - for example, 7.51s release will bring 15.1.0 The final number is the patch release 
 for ElezenTools - this increments whenever a change is published.
 
 As a general rule, if your project works fine with the current version of ElezenTools, just update

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <Version>15.0.0-rc6</Version>
+        <Version>15.0.0-rc7</Version>
         <TargetFramework>net10.0-windows</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
@@ -70,7 +70,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Meziantou.Analyzer" Version="3.0.56">
+      <PackageReference Include="Meziantou.Analyzer" Version="3.0.58">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
