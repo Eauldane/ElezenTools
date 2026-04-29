@@ -73,5 +73,45 @@ public class Service
         return func.Invoke();
     }
 
-  
+    public static async Task UseFramework(Func<Task> func)
+    {
+        if (!Framework.IsInFrameworkUpdateThread)
+        {
+            await Framework.RunOnTick(func).ConfigureAwait(false);
+            while (Framework.IsInFrameworkUpdateThread) // yield the thread again, should technically never be triggered
+            {
+                await Task.Delay(1).ConfigureAwait(false);
+            }
+
+            return;
+        }
+
+        await func.Invoke().ConfigureAwait(false);
+        while (Framework.IsInFrameworkUpdateThread) // yield the thread again, should technically never be triggered
+        {
+            await Task.Delay(1).ConfigureAwait(false);
+        }
+    }
+
+    public static async Task<T> UseFramework<T>(Func<Task<T>> func)
+    {
+        if (!Framework.IsInFrameworkUpdateThread)
+        {
+            var result = await Framework.RunOnTick(func).ConfigureAwait(false);
+            while (Framework.IsInFrameworkUpdateThread) // yield the thread again, should technically never be triggered
+            {
+                await Task.Delay(1).ConfigureAwait(false);
+            }
+
+            return result;
+        }
+
+        var localResult = await func.Invoke().ConfigureAwait(false);
+        while (Framework.IsInFrameworkUpdateThread) // yield the thread again, should technically never be triggered
+        {
+            await Task.Delay(1).ConfigureAwait(false);
+        }
+
+        return localResult;
+    }
 }
