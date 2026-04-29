@@ -136,7 +136,7 @@ public static partial class ElezenData
             foreach (var row in cardSheet)
             {
                 var name = ToText(row.Name);
-                if (string.IsNullOrWhiteSpace(name))
+                if (row.RowId == 0 || string.IsNullOrWhiteSpace(name))
                 {
                     continue;
                 }
