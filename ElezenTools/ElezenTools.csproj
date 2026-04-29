@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <Version>15.0.0-rc8</Version>
+        <Version>15.0.0</Version>
         <TargetFramework>net10.0-windows</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
@@ -14,7 +14,7 @@
         <PackageProjectUrl>https://github.com/Eauldane/ElezenTools</PackageProjectUrl>
         <RepositoryUrl>https://github.com/Eauldane/ElezenTools</RepositoryUrl>
         <Authors>Eauldane</Authors>
-        <Description>A stable, opinionatedw wrapper for Dalamud with compatibility shims.</Description>
+        <Description>A stable, opinionated wrapper for Dalamud with compatibility shims.</Description>
         <Copyright>Eauldane</Copyright>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <PackageReadmeFile>README.md</PackageReadmeFile>
